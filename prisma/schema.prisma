@@ -13,15 +13,42 @@ datasource db {
 }
 
 model User {
-  id          String               @id @default(uuid())
-  name        String
-  email       String               @unique
-  password    String
-  createdAt   DateTime             @default(now())
-  updatedAt   DateTime             @updatedAt
-  imageId     String?              @unique
- 
-  
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  imageId   String?  @unique
+
   @@map("users")
 }
 
+model Address {
+  id       String     @id @default(uuid())
+  street   String
+  city     String
+  state    String
+  zip      String
+  Building Building[]
+
+  @@map("address")
+}
+
+model Building {
+  id      String  @id @default(uuid())
+  name    String
+  address Address @relation(fields: [addressId], references: [id])
+
+  addressId  String
+  Apartament Apartament[]
+
+  @@map("buildings")
+}
+
+model Apartament {
+  id         String   @id @default(uuid())
+  number     Int
+  building   Building @relation(fields: [buildingId], references: [id])
+  buildingId String
+}
