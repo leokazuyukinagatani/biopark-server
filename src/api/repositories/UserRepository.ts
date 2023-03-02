@@ -18,6 +18,17 @@ export class UserRepository {
     })
 
   }
+  
+  async update(data: UserRequest) {
+    await prisma.user.update({
+      where: {
+        id: data.id
+      },
+      data: {
+        ...data
+      }
+    })
+  }
 
   async showByEmail(email: string) {
     const userResult = await prisma.user.findFirst({
