@@ -9,7 +9,7 @@ interface UserRequest {
 
 export class UserRepository {
   async create({ name, email, password }: UserRequest) {
-    const response = await prisma.user.create({
+    await prisma.user.create({
       data: {
         email,
         name,
@@ -17,7 +17,6 @@ export class UserRepository {
       },
     })
 
-    return { id: response.id }
   }
 
   async showByEmail(email: string) {

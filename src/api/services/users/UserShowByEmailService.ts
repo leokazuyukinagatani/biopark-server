@@ -3,8 +3,8 @@ import { UserRepository } from "../../repositories/UserRepository";
 export class UserShowByEmailService {
   repository: UserRepository;
 
-  constructor() {
-    this.repository = new UserRepository();
+  constructor(userRepository: UserRepository) {
+    this.repository = userRepository;
   }
 
   async execute(email: string) {

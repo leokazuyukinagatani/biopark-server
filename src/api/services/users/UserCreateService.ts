@@ -14,31 +14,36 @@ const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[$*&@#?])(?:([0-9a-zA
 class UserCreateService {
   repository: UserRepository;
 
-  constructor() {
-    this.repository = new UserRepository();
+  constructor(userRepository: UserRepository) {
+    this.repository = userRepository;
   }
 
   async execute({ name, email, password }: UserRequest) {
-    
-
+ 
+   
     if (!name) {
       throw new AppError("Nome é obrigatório.");
     }
+   
     if (!email) {
       throw new AppError("Email é obrigatório.");
     }
+  
+
     if (!password) {
       throw new AppError("Senha é obrigatória.");
+      
     }
+   
+
     if (!EmailValidator.validate(email)) {
       throw new AppError("Email inválido.");
     }
-    if (!passwordRegex.test(password)) {
-      throw new AppError(
-        "Senha inválida, a senha deve conter ao menos um digito, uma letra minúscula, uma letra maiúscula, um caractere especial e ao menos 8 caracteres"
-      );
-    }
-   
+    // if (!passwordRegex.test(password)) {
+    //   throw new AppError(
+    //     "Senha inválida, a senha deve conter ao menos um digito, uma letra minúscula, uma letra maiúscula, um caractere especial e ao menos 8 caracteres"
+    //   );
+    // }
     const userWithEmail = await this.repository.showByEmail(email);
 
     if (userWithEmail) {
@@ -48,12 +53,11 @@ class UserCreateService {
     const hashedPassword = hashSync(password);
 
     try {
-      const userId = await this.repository.create({
+       await this.repository.create({
         name,
         email,
         password: hashedPassword,
       });
-      return { userId };
     } catch (error) {
       throw new AppError("erro ao cadastrar usuario")
     }
