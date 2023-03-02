@@ -20,35 +20,52 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   imageId   String?  @unique
+  role      Role     @default(USER)
 
   @@map("users")
 }
 
 model Address {
-  id       String     @id @default(uuid())
-  street   String
-  city     String
-  state    String
-  zip      String
-  Building Building[]
+  id     String @id @default(uuid())
+  street String
+  city   String
+  state  String
+  zip    String
+
+  building Building?
 
   @@map("address")
 }
 
 model Building {
-  id      String  @id @default(uuid())
-  name    String
-  address Address @relation(fields: [addressId], references: [id])
-
-  addressId  String
-  Apartament Apartament[]
+  id          String       @id @default(uuid())
+  name        String
+  description String
+  address     Address      @relation(fields: [addressId], references: [id])
+  floors      Int
+  yearBuild   DateTime?
+  amenities   String[]
+  Apartament  Apartament[]
+  image       String
+  addressId String @unique
 
   @@map("buildings")
 }
 
 model Apartament {
-  id         String   @id @default(uuid())
-  number     Int
-  building   Building @relation(fields: [buildingId], references: [id])
-  buildingId String
+  id            String   @id @default(uuid())
+  number        Int
+  bedrooms      Int
+  bathrooms     Int
+  parkingSpaces Int
+  furnished     Boolean
+  petsAllowed   Boolean
+  size          Float
+  building      Building @relation(fields: [buildingId], references: [id])
+  buildingId    String
+}
+
+enum Role {
+  USER
+  ADMIN
 }
