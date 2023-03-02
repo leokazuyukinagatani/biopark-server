@@ -4,12 +4,17 @@ import { authConfig } from "../configs/auth";
 import { sign } from "jsonwebtoken";
 import { Request, Response } from "express";
 import { UserShowByEmailService } from "../services/users/UserShowByEmailService";
+import { UserRepository } from "../repositories/UserRepository";
 
 export class SessionsController {
+  userRepository: UserRepository
+  constructor() {
+    this.userRepository = new UserRepository()
+  }
   async create(request: Request, response: Response) {
     const { email, password } = request.body;
 
-    const userShowByEmailService = new UserShowByEmailService();
+    const userShowByEmailService = new UserShowByEmailService(this.userRepository);
 
     const user = await userShowByEmailService.execute(email);
 
