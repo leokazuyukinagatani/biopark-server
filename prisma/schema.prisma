@@ -32,21 +32,23 @@ model Address {
   state  String
   zip    String
 
-  buildings Building[]
+  building   Building @relation(fields: [buildingId], references: [id])
+  buildingId String   @unique
 
   @@map("address")
 }
 
 model Building {
-  id          String       @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
   description String?
-  address     Address      @relation(fields: [addressId], references: [id])
-  floors      Int
-  amenities   String[]
-  Apartament  Apartament[]
-  image       String?
-  addressId   String       @unique
+
+  floors     Int
+  amenities  String[]
+  Apartament Apartament[]
+  image      String?
+
+  address Address?
 
   @@map("buildings")
 }
