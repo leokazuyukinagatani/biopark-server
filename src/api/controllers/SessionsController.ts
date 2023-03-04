@@ -1,8 +1,9 @@
-import { compare } from "bcryptjs";
+import { Request, Response } from "express";
 import { AppError } from "../utils/AppError";
 import { authConfig } from "../configs/auth";
 import { sign } from "jsonwebtoken";
-import { Request, Response } from "express";
+import { compare } from "bcryptjs";
+
 import { UserShowByEmailService } from "../services/users/UserShowByEmailService";
 import { UserRepository } from "../repositories/UserRepository";
 

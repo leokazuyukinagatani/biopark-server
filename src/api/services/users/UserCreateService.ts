@@ -3,7 +3,7 @@ import { AppError } from '../../utils/AppError'
 
 import { hashSync } from 'bcryptjs'
 import * as zod from 'zod'
-import { ZodError } from 'zod'
+
 
 interface UserRequest {
   name: string
@@ -51,11 +51,11 @@ class UserCreateService {
         password: hashedPassword,
       })
     } catch (error) {
-      if (error instanceof ZodError) {
+      if (error instanceof zod.ZodError) {
         const messages = error.errors.map((error) => error.message)
         throw new AppError(messages.toString())
       } else {
-        throw new AppError('erro ao cadastrar usuario')
+        throw new AppError('Erro ao cadastrar usuario')
       }
     }
   }

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { UserRepository } from "../repositories/UserRepository";
-import { UserCreateService } from "../services/users/UserCreateService";
-import { UserShowByEmailService } from "../services/users/UserShowByEmailService";
+import { UserCreateService, UserShowByEmailService } from "../services/users";
 
 export class UsersController {
   userRepository: UserRepository

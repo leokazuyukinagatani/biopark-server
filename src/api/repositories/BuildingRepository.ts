@@ -1,20 +1,18 @@
+
 import { prisma } from '../database/prisma'
-interface Address {
-  street: string
-  city: string
-  state: string
-  zip: string
-}
+import { Address } from '@prisma/client'
 
 interface BuildingRequest {
   id?: string
   name: string
   description: string
-  address: Address
   floors: number
   amenities: string[]
-  image: string
+  image?: string
+  address?: Address
+ 
 }
+
 
 export class BuildingRepository {
   async create({
@@ -53,7 +51,7 @@ export class BuildingRepository {
       orderBy: { name: 'asc' },
       include: {
         address: true,
-        Apartament: true,
+        apartment: true,
       },
     })
 
@@ -85,6 +83,7 @@ export class BuildingRepository {
         floors,
         amenities,
         image,
+       
         address: {
           update: address,
         },

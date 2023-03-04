@@ -16,17 +16,18 @@ export class UserRepository {
         password,
       },
     })
-
   }
-  
-  async update(data: UserRequest) {
+
+  async update({ id, name, email, password }: UserRequest) {
     await prisma.user.update({
       where: {
-        id: data.id
+        id,
       },
       data: {
-        ...data
-      }
+        name,
+        email,
+        password,
+      },
     })
   }
 
@@ -35,8 +36,7 @@ export class UserRepository {
       where: {
         email,
       },
-    });
-    return userResult;
+    })
+    return userResult
   }
-
 }
