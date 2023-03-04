@@ -13,57 +13,84 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String     @id @default(uuid())
   name      String
-  email     String   @unique
+  email     String     @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  imageId   String?  @unique
-  role      Role     @default(USER)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  imageId   String?    @unique
+  role      Role       @default(USER)
+  owners    Owner[]
+  locations Location[]
 
   @@map("users")
 }
 
 model Address {
-  id     String @id @default(uuid())
-  street String
-  city   String
-  state  String
-  zip    String
-
-  building   Building @relation(fields: [buildingId], references: [id])
+  id         String   @id @default(uuid())
+  street     String
+  city       String
+  state      String
+  zip        String
   buildingId String   @unique
+  building   Building @relation(fields: [buildingId], references: [id])
 
   @@map("address")
 }
 
 model Building {
-  id          String  @id @default(uuid())
+  id          String      @id @default(uuid())
   name        String
   description String?
-
-  floors     Int
-  amenities  String[]
-  Apartament Apartament[]
-  image      String?
-
-  address Address?
+  floors      Int
+  amenities   String[]
+  image       String?
+  apartment   Apartment[]
+  address     Address?
 
   @@map("buildings")
 }
 
-model Apartament {
-  id            String   @id @default(uuid())
-  number        Int
-  bedrooms      Int
-  bathrooms     Int
-  parkingSpaces Int
-  furnished     Boolean
-  petsAllowed   Boolean
-  size          Float
-  building      Building @relation(fields: [buildingId], references: [id])
-  buildingId    String
+model Apartment {
+  id              String   @id @default(uuid())
+  apartmentNumber Int
+  bedrooms        Int
+  bathrooms       Int
+  parkingSpaces   Int
+  furnished       Boolean
+  petsAllowed     Boolean
+  size            Int
+  rentValue       Int
+
+  building        Building @relation(fields: [buildingId], references: [id])
+  buildingId      String
+
+  Owner    Owner?     @relation(fields: [ownerId], references: [id])
+  ownerId  String?
+  
+  Location Location[]
+}
+
+model Owner {
+  id String @id @default(uuid())
+
+  user        User        @relation(fields: [userId], references: [id])
+  userId      String
+
+  apartments Apartment[]
+}
+
+model Location {
+  id          String    @id @default(uuid())
+  startDate   DateTime
+  endDate     DateTime
+  totalValue  Int
+  
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  apartment  Apartment @relation(fields: [apartmentId], references: [id])
+  apartmentId String
 }
 
 enum Role {
