@@ -1,7 +1,12 @@
 import { Request, Response } from 'express'
 import { BuildingRepository } from '../repositories/BuildingRepository'
-import { BuildingCreateService } from '../services/buildings/BuildingCreateService'
-// import { BuildingShowByIdService } from "../services/buildings/BuildingShowByIdService";
+import {
+  BuildingCreateService,
+  BuildingDeleteService,
+  BuildingIndexService,
+  BuildingShowService,
+  BuildingUpdateService,
+} from '../services/buildings'
 
 export class BuildingsController {
   buildingRepository: BuildingRepository
@@ -35,9 +40,58 @@ export class BuildingsController {
     return response.status(201)
   }
 
-  async show(request: Request, response: Response) {}
+  async delete(request: Request, response: Response) {
+    const { id } = request.params
+  
+    const buildingDeleteService = new BuildingDeleteService(
+      this.buildingRepository,
+    )
+    await buildingDeleteService.execute(id)
+    return response.status(200).json({})
+  }
 
-  async update(request: Request, response: Response) {}
+  async show(request: Request, response: Response) {
+    const { id } = request.params
+    const buildingShowService = new BuildingShowService(this.buildingRepository)
+    const building = await buildingShowService.execute(id)
 
-  async index(request: Request, response: Response) {}
+    return response.status(200).json({ building })
+  }
+
+  async update(request: Request, response: Response) {
+    const {
+      name,
+      description,
+      floors,
+      amenities,
+      image,
+      address,
+    } = request.body
+    const { id } = request.params
+    const buildingUpdateService = new BuildingUpdateService(
+      this.buildingRepository,
+    )
+
+    await buildingUpdateService.execute({
+      id,
+      name,
+      description,
+      floors,
+      amenities,
+      image,
+      address,
+    })
+
+    return response.status(201)
+  }
+
+  async index(request: Request, response: Response) {
+    const buildingIndexService = new BuildingIndexService(
+      this.buildingRepository,
+    )
+
+    const buildings = buildingIndexService.execute()
+
+    return response.status(200).json({ buildings })
+  }
 }

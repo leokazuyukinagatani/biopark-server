@@ -1,6 +1,7 @@
-import { BuildingRepository } from "src/api/repositories/BuildingRepository"
+import { BuildingRepository } from 'src/api/repositories/BuildingRepository'
+import { AppError } from 'src/api/utils/AppError'
 
-export class BuildingDeleteService {
+class BuildingDeleteService {
   repository: BuildingRepository
 
   constructor(buildingRepository: BuildingRepository) {
@@ -8,6 +9,12 @@ export class BuildingDeleteService {
   }
 
   async execute(id: string) {
-    await this.repository.delete(id)
+    try {
+      await this.repository.delete(id)
+    } catch (error) {
+      throw new AppError('Erro ao deletar o prédio')
+    }
   }
 }
+
+export { BuildingDeleteService }
