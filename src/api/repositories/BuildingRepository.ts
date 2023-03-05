@@ -1,8 +1,12 @@
-
 import { prisma } from '../database/prisma'
-import { Address } from '@prisma/client'
 
-interface BuildingRequest {
+export type Address = {
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+}
+export interface BuildingRequest {
   id?: string
   name: string
   description: string
@@ -10,7 +14,6 @@ interface BuildingRequest {
   amenities: string[]
   image?: string
   address?: Address
- 
 }
 
 

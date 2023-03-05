@@ -1,6 +1,6 @@
 import { prisma } from '../database/prisma'
 
-interface ApartmentRequest  {
+export interface ApartmentRequest  {
   id?: string;
   apartmentNumber: number;
   bedrooms: number;
@@ -31,8 +31,11 @@ export class ApartmentRepository {
     return apartmentResult
   }
 
-  async index() {
+  async index(id: string) {
     const apartments = await prisma.apartment.findMany({
+      where: {
+        buildingId: id
+      },
       orderBy: { id: 'asc' },
       include: {
         building: true,
