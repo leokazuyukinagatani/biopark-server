@@ -1,3 +1,21 @@
-import * as zod from 'zod'
+import { ApartmentRepository } from 'src/api/repositories/ApartmentRepository'
+import { AppError } from 'src/api/utils/AppError'
 
-export function ApartmentIndexService(){}
+
+class ApartmentIndexService {
+  repository: ApartmentRepository
+
+  constructor(apartmentRepository: ApartmentRepository) {
+    this.repository = apartmentRepository
+  }
+
+  async execute(id: string) {
+    try {
+      const apartments = await this.repository.index(id)
+      return apartments
+    }catch(error) {
+      throw new AppError('Erro ao listar os apartamentos')
+    }
+  }
+}
+export { ApartmentIndexService }

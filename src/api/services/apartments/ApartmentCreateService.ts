@@ -1,16 +1,8 @@
+import { ApartmentRepository, ApartmentRequest } from '../../repositories/ApartmentRepository'
+import { AppError } from '../../utils/AppError'
 import * as zod from 'zod'
-interface Apartment {
-  apartmentNumber: number
-  bedrooms: number
-  bathrooms: number
-  parkingSpaces: number
-  furnished: boolean
-  petsAllowed: boolean
-  size: number
-  buildingId: string
-}
 
-const apartmentValidate = zod.object({
+export const apartmentValidate = zod.object({
   apartmentNumber: zod.number(),
   bedrooms: zod.number(),
   bathrooms: zod.number(),
@@ -19,6 +11,29 @@ const apartmentValidate = zod.object({
   petsAllowed: zod.boolean(),
   size: zod.number(),
   buildingId: zod.string(),
+  rentValue: zod.number(),
+  ownerId: zod.string()
 })
 
-export function ApartmentCreateService(){}
+class ApartmentCreateService{
+  repository: ApartmentRepository
+
+  constructor(apartmentRepository: ApartmentRepository) {
+    this.repository = apartmentRepository
+  }
+
+  async execute(data: ApartmentRequest) { 
+    const apartmentValidated = apartmentValidate.parse(data)
+    try {
+      await this.repository.create(apartmentValidated)
+    }catch(error) {
+      if (error instanceof Error) {
+        throw new AppError(error.message)
+      } else {
+        throw new AppError('Erro ao cadastrar o apartamento')
+      }
+    }
+  }
+
+}
+export { ApartmentCreateService }
