@@ -1,43 +1,93 @@
 import { Request, Response } from 'express'
-import { BuildingRepository } from '../repositories/BuildingRepository'
-import { BuildingCreateService } from '../services/buildings/BuildingCreateService'
-// import { BuildingShowByIdService } from "../services/buildings/BuildingShowByIdService";
+import { CustomRequest } from '../middlewares/ensureAuthenticated'
+import { LocationRepository } from '../repositories/LocationRepository'
+import {
+  LocationCreateService,
+  LocationDeleteService,
+  LocationIndexService,
+  LocationShowService,
+  LocationUpdateService,
+} from '../services/locations'
+import { AppError } from '../utils/AppError'
 
-export class BuildingsController {
-  buildingRepository: BuildingRepository
+export class LocationsController {
+  locationRepository: LocationRepository
 
   constructor() {
-    this.buildingRepository = new BuildingRepository()
+    this.locationRepository = new LocationRepository()
   }
 
-  async create(request: Request, response: Response) {
-    const {
-      name,
-      description,
-      floors,
-      amenities,
-      image,
-      address,
-    } = request.body
-    const buildingCreateService = new BuildingCreateService(
-      this.buildingRepository,
+  async create(request: CustomRequest, response: Response) {
+    const { startDate, endDate, totalValue } = request.body
+    const { user } = request
+    const { apartmentId } = request.params
+    const locationCreateService = new LocationCreateService(
+      this.locationRepository,
     )
-
-    await buildingCreateService.execute({
-      name,
-      description,
-      floors,
-      amenities,
-      image,
-      address,
+    if (!user || typeof user.id !== 'string') {
+      throw new AppError('Usuário não encontrado')
+    }
+    await locationCreateService.execute({
+      startDate,
+      endDate,
+      totalValue,
+      userId: user.id,
+      apartmentId,
     })
 
     return response.status(201)
   }
 
-  async show(request: Request, response: Response) {}
+  async show(request: Request, response: Response) {
+    const { id } = request.params
+    const locationShowService = new LocationShowService(this.locationRepository)
+    const location = await locationShowService.execute(id)
+    return response.status(200).json({ location })
+  }
+  async delete(request: Request, response: Response) {
+    const { id } = request.params
 
-  async update(request: Request, response: Response) {}
+    const locationDeleteService = new LocationDeleteService(
+      this.locationRepository,
+    )
+    await locationDeleteService.execute(id)
+    return response.status(200).json({})
+  }
 
-  async index(request: Request, response: Response) {}
+  async update(request: CustomRequest, response: Response) {
+    const { startDate, endDate, totalValue } = request.body
+    const { user } = request
+    const { id, apartmentId } = request.params
+    const locationUpdateService = new LocationUpdateService(
+      this.locationRepository,
+    )
+    if (!user || typeof user.id !== 'string') {
+      throw new AppError('Usuário não encontrado')
+    }
+    
+    await locationUpdateService.execute({
+      id,
+      startDate,
+      endDate,
+      totalValue,
+      userId: user.id,
+      apartmentId,
+    })
+
+    return response.status(201)
+  }
+
+  async index(request: CustomRequest, response: Response) {
+    const locationIndexService = new LocationIndexService(
+      this.locationRepository,
+    )
+    const { user } = request
+    if (!user || typeof user.id !== 'string') {
+      throw new AppError('usuário não encontrado')
+    }
+
+    const locations = locationIndexService.execute(user.id)
+
+    return response.status(200).json({ locations })
+  }
 }
