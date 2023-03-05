@@ -8,7 +8,7 @@ interface UserCreateRequest {
 
 enum Role {
   USER = 'USER',
-  ADMIN = 'ADMIN'
+  ADMIN = 'ADMIN',
 }
 
 interface UserShowResponse {
@@ -38,7 +38,5 @@ export class InMemoryUsersRepository implements UserRepository {
     }
     return user as UserShowResponse
   }
-  async update() {
-    
-  }
+  async update() {}
 }

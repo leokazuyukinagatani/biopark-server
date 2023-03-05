@@ -1,5 +1,5 @@
-import { ApartmentRepository } from 'src/api/repositories/ApartmentRepository'
-import { AppError } from 'src/api/utils/AppError'
+import { ApartmentRepository } from '../../repositories/ApartmentRepository'
+import { AppError } from '../../utils/AppError'
 
 
 class ApartmentIndexService {

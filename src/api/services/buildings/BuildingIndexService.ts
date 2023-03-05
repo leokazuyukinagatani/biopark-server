@@ -1,4 +1,4 @@
-import { AppError } from 'src/api/utils/AppError'
+import { AppError } from '../../utils/AppError'
 import { BuildingRepository } from '../../repositories/BuildingRepository'
 
 class BuildingIndexService {

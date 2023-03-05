@@ -1,5 +1,5 @@
 
-import { BuildingRepository } from '../../src/api/repositories/BuildingRepository'
+
 interface Address {
   street: string
   city: string

@@ -1,5 +1,5 @@
-import { BuildingRepository } from 'src/api/repositories/BuildingRepository'
-import { AppError } from 'src/api/utils/AppError'
+import { BuildingRepository } from '../../repositories/BuildingRepository'
+import { AppError } from '../../utils/AppError'
 
 class BuildingDeleteService {
   repository: BuildingRepository
