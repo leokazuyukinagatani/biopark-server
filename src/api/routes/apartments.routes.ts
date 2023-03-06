@@ -9,7 +9,7 @@ apartmentsRoutes.use(ensureAuthenticated)
 apartmentsRoutes.post('/:buildingId', apartmentController.create)
 apartmentsRoutes.put('/:buildingId/:id', apartmentController.update)
 apartmentsRoutes.get('/:id', apartmentController.show)
-apartmentsRoutes.get('/:id', apartmentController.index)
+apartmentsRoutes.get('/buildingId/:buildingId', apartmentController.index)
 apartmentsRoutes.delete('/:id', apartmentController.delete)
 
 export { apartmentsRoutes }

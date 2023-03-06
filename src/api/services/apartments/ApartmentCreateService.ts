@@ -59,12 +59,12 @@ class ApartmentCreateService {
       const apartmentResponse =  await this.repository.create({
         apartmentNumber: Number(apartmentNumber),
         bedrooms: Number(bedrooms),
-        bathrooms: Number(bedrooms),
-        parkingSpaces: Number(bedrooms),
+        bathrooms: Number( bathrooms),
+        parkingSpaces: Number(parkingSpaces),
         furnished,
         petsAllowed,
-        size: Number(bedrooms),
-        rentValue: Number(bedrooms),
+        size: Number(size),
+        rentValue: Number(rentValue),
         buildingId,
         imageId
       })
