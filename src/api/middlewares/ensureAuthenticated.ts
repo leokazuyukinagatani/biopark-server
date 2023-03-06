@@ -10,9 +10,10 @@ export interface CustomRequest extends Request {
   }
 }
 
-export function ensureAuthenticaticated(request: CustomRequest, response: Response, next: NextFunction) {
-  const authHeader = request.headers.authorization
+export function ensureAuthenticated(request: CustomRequest, response: Response, next: NextFunction) {
 
+  const authHeader = request.headers.authorization
+  
   if(!authHeader) {
     throw new AppError('JWT não foi informado', 401)
   }
@@ -21,11 +22,12 @@ export function ensureAuthenticaticated(request: CustomRequest, response: Respon
 
   try {
     const { sub: user_id } = verify(token, authConfig.jwt.secret)
-
+ 
     request.user = {
       id: user_id
     }
   } catch (error) {
     throw new AppError('JWT inválido', 401)   
   }
+  next()
 }
