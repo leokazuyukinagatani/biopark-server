@@ -12,11 +12,7 @@ import {
 import { AppError } from '../utils/AppError'
 
 export class ApartmentsController {
-  apartmentRepository: ApartmentRepository
-
-  constructor() {
-    this.apartmentRepository = new ApartmentRepository()
-  }
+  
 
   async create(request: CustomRequest, response: Response) {
     const {
@@ -28,19 +24,23 @@ export class ApartmentsController {
       petsAllowed,
       size,
       rentValue,
+      imageId
     } = request.body
+
+    console.log('dentro do apartment controller')
 
     const { user } = request
     const { buildingId } = request.params
+    const apartmentRepository = new ApartmentRepository()
     const apartmentCreateService = new ApartmentCreateService(
-      this.apartmentRepository,
+      apartmentRepository,
     )
 
     if (!user || typeof user.id != 'string') {
       return
     }
 
-    await apartmentCreateService.execute({
+    const apartmentCreated = await apartmentCreateService.execute({
       apartmentNumber,
       bedrooms,
       bathrooms,
@@ -49,15 +49,17 @@ export class ApartmentsController {
       petsAllowed,
       size,
       rentValue,
-      ownerId: user.id,
       buildingId,
+      imageId
     })
+    return response.status(201).json(apartmentCreated)
   }
 
   async show(request: Request, response: Response) {
     const { id } = request.params
+    const apartmentRepository = new ApartmentRepository()
     const apartmentShowService = new ApartmentShowService(
-      this.apartmentRepository,
+      apartmentRepository,
     )
     const apartment = await apartmentShowService.execute(id)
 
@@ -67,9 +69,9 @@ export class ApartmentsController {
   async delete(request: CustomRequest, response: Response) {
     const { id } = request.params
     const { user } = request
-
+    const apartmentRepository = new ApartmentRepository()
     const apartmentShowService = new ApartmentShowService(
-      this.apartmentRepository,
+      apartmentRepository
     )
     const apartment = await apartmentShowService.execute(id)
     if (!user) {
@@ -82,7 +84,7 @@ export class ApartmentsController {
       throw new AppError('Este apartamento não é seu')
     }
     const apartmentDeleteService = new ApartmentDeleteService(
-      this.apartmentRepository,
+      apartmentRepository,
     )
     await apartmentDeleteService.execute(id)
   }
@@ -97,12 +99,14 @@ export class ApartmentsController {
       petsAllowed,
       size,
       rentValue,
+      imageId
+     
     } = request.body
     const { user } = request
     const { buildingId, id } = request.params
-
+    const apartmentRepository = new ApartmentRepository()
     const apartmentShowService = new ApartmentShowService(
-      this.apartmentRepository,
+      apartmentRepository,
     )
     const apartment = await apartmentShowService.execute(id)
     if (!user) {
@@ -115,9 +119,9 @@ export class ApartmentsController {
       throw new AppError('Este apartamento não é seu')
     }
     const apartmentUpdateService = new ApartmentUpdateService(
-      this.apartmentRepository
+      apartmentRepository
     )
-    await apartmentUpdateService.execute({
+    const apartmentResponse = await apartmentUpdateService.execute({
       id,
       apartmentNumber,
       bedrooms,
@@ -128,15 +132,18 @@ export class ApartmentsController {
       size,
       rentValue,
       ownerId: user.id,
-      buildingId
-
+      buildingId,
+      imageId
+      
     })
+    return apartmentResponse
   }
 
   async index(request: Request, response: Response) {
     const { id } = request.params
+    const apartmentRepository = new ApartmentRepository()
     const apartmentIndexService = new ApartmentIndexService(
-      this.apartmentRepository,
+      apartmentRepository,
     )
 
     const apartments = apartmentIndexService.execute(id)

@@ -16,6 +16,7 @@ export interface ApartmentUpdateRequest {
   rentValue: number
   buildingId: string
   ownerId: string | null
+  imageId: string
 }
 
 class ApartmentUpdateService {

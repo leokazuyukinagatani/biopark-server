@@ -9,53 +9,39 @@ import {
 } from '../services/buildings'
 
 export class BuildingsController {
-  buildingRepository: BuildingRepository
-
-  constructor() {
-    this.buildingRepository = new BuildingRepository()
-  }
-
   async create(request: Request, response: Response) {
-    const {
-      name,
-      description,
-      floors,
-      amenities,
-      image,
-      address,
-    } = request.body
-    const buildingCreateService = new BuildingCreateService(
-      this.buildingRepository,
-    )
+    const { name, description, floors, amenities, imageId } = request.body
 
-    await buildingCreateService.execute({
+    
+    const buildingRepository = new BuildingRepository()
+    const buildingCreateService = new BuildingCreateService(buildingRepository)
+
+    const building = await buildingCreateService.execute({
       name,
       description,
-      floors,
+      floors: Number(floors),
       amenities,
-      image,
-      address,
+      imageId,
     })
 
-    return response.status(201)
+    return response.status(201).json(building)
   }
 
   async delete(request: Request, response: Response) {
     const { id } = request.params
-  
-    const buildingDeleteService = new BuildingDeleteService(
-      this.buildingRepository,
-    )
+    const buildingRepository = new BuildingRepository()
+    const buildingDeleteService = new BuildingDeleteService(buildingRepository)
     await buildingDeleteService.execute(id)
     return response.status(200).json({})
   }
 
   async show(request: Request, response: Response) {
     const { id } = request.params
-    const buildingShowService = new BuildingShowService(this.buildingRepository)
+    const buildingRepository = new BuildingRepository()
+    const buildingShowService = new BuildingShowService(buildingRepository)
     const building = await buildingShowService.execute(id)
-
-    return response.status(200).json({ building })
+    console.log(building)
+    return response.status(200).json(building )
   }
 
   async update(request: Request, response: Response) {
@@ -68,9 +54,8 @@ export class BuildingsController {
       address,
     } = request.body
     const { id } = request.params
-    const buildingUpdateService = new BuildingUpdateService(
-      this.buildingRepository,
-    )
+    const buildingRepository = new BuildingRepository()
+    const buildingUpdateService = new BuildingUpdateService(buildingRepository)
 
     await buildingUpdateService.execute({
       id,
@@ -86,12 +71,11 @@ export class BuildingsController {
   }
 
   async index(request: Request, response: Response) {
-    const buildingIndexService = new BuildingIndexService(
-      this.buildingRepository,
-    )
+    const buildingRepository = new BuildingRepository()
+    const buildingIndexService = new BuildingIndexService(buildingRepository)
 
-    const buildings = buildingIndexService.execute()
-
-    return response.status(200).json({ buildings })
+    const buildings = await buildingIndexService.execute()
+    console.log(buildings)
+    return response.status(200).json(buildings )
   }
 }

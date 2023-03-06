@@ -39,9 +39,11 @@ class BuildingCreateService {
   }
 
   async execute(data: BuildingRequest) {
-    const buildingValidated = buildingValidate.parse(data)
+    console.log(data)
+    // const buildingValidated = buildingValidate.parse(data)
     try {
-      await this.repository.create(buildingValidated)
+      const response = await this.repository.create(data)
+      return response
     } catch (error) {
       if (error instanceof Error) {
         throw new AppError(error.message)
@@ -49,6 +51,7 @@ class BuildingCreateService {
         throw new AppError('Erro ao cadastrar o prédio')
       }
     }
+    
   }
 }
 export { BuildingCreateService }

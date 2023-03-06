@@ -3,7 +3,7 @@ import {
   BuildingRepository,
 } from '../../repositories/BuildingRepository'
 import { buildingValidate } from './BuildingCreateService'
-import { AppError } from 'src/api/utils/AppError'
+import { AppError } from '../../utils/AppError'
 import { BuildingShowService } from './BuildingShowService'
 
 

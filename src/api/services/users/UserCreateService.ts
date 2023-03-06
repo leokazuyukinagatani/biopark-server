@@ -3,7 +3,7 @@ import { AppError } from '../../utils/AppError'
 
 import { hashSync } from 'bcryptjs'
 import * as zod from 'zod'
-
+import {Prisma } from '@prisma/client'
 
 interface UserRequest {
   name: string
@@ -32,32 +32,27 @@ class UserCreateService {
   }
 
   async execute({ name, email, password }: UserRequest) {
-    try {
+    
       const userValidated = userValidate.parse({ name, email, password })
-
       const userWithEmail = await this.repository.showByEmail(
-        userValidated.email,
+        userValidated.email
       )
-
+    
       if (userWithEmail) {
         throw new AppError('Email já cadastrado', 403)
       }
 
       const hashedPassword = hashSync(userValidated.password)
+     
+      const response =   await this.repository.create({
+          name,
+          email,
+          password: hashedPassword,
+        })
 
-      await this.repository.create({
-        name,
-        email,
-        password: hashedPassword,
-      })
-    } catch (error) {
-      if (error instanceof zod.ZodError) {
-        const messages = error.errors.map((error) => error.message)
-        throw new AppError(messages.toString())
-      } else {
-        throw new AppError('Erro ao cadastrar usuario')
-      }
-    }
+      return response
+        
+     
   }
 }
 

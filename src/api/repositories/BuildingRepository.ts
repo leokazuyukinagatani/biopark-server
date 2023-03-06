@@ -12,7 +12,7 @@ export interface BuildingRequest {
   description: string
   floors: number
   amenities: string[]
-  image?: string
+  imageId?: string
   address?: Address
 }
 
@@ -23,21 +23,20 @@ export class BuildingRepository {
     description,
     floors,
     amenities,
-    image,
-    address,
+    imageId,
+   
   }: BuildingRequest) {
-    await prisma.building.create({
+   
+    const createdBuilding = await prisma.building.create({
       data: {
         name,
         description,
         floors,
         amenities,
-        image,
-        address: {
-          create: address,
-        },
+        imageId,
       },
     })
+    return { id: createdBuilding.id }
   }
 
   async showById(id: string) {
@@ -45,6 +44,10 @@ export class BuildingRepository {
       where: {
         id,
       },
+
+      include: {
+        image: true
+      }
     })
     return buildingResult
   }
@@ -55,6 +58,7 @@ export class BuildingRepository {
       include: {
         address: true,
         apartment: true,
+        image: true
       },
     })
 
@@ -65,13 +69,14 @@ export class BuildingRepository {
     await prisma.building.delete({
       where: { id },
     })
+    return 
   }
 
   async update({
     id,
     name,
     description,
-    image,
+    imageId,
     floors,
     amenities,
     address,
@@ -85,12 +90,13 @@ export class BuildingRepository {
         description,
         floors,
         amenities,
-        image,
+        imageId,
        
         address: {
           update: address,
         },
       },
     })
+    return 
   }
 }
