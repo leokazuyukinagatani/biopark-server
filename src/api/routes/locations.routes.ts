@@ -1,12 +1,12 @@
 import { Router } from 'express'
 import { LocationsController } from '../controllers/LocationsController'
-import { ensureAuthenticaticated } from '../middlewares/ensureAuthenticated'
+import { ensureAuthenticated } from '../middlewares/ensureAuthenticated'
 
 
 const locationsRoutes = Router() 
 const locationsController = new LocationsController()
 
-locationsRoutes.use( ensureAuthenticaticated)
+locationsRoutes.use( ensureAuthenticated)
 locationsRoutes.post('/:apartmentId', locationsController.create)
 locationsRoutes.put('/:apartmentId/:id', locationsController.update)
 locationsRoutes.get('/:id', locationsController.show)
