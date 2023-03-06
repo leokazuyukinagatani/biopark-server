@@ -24,10 +24,15 @@ class LocationCreateService {
     this.repository = locationRepository
   }
 
+  
   async execute(data: LocationRequest) {
-    const locationValidated = locationValidate.parse(data)
+    console.log('dentro do service')
+    console.log(data)
+    // const locationValidated = locationValidate.parse(data)
+    console.log('depois dos dados validados')
     try {
-      await this.repository.create(locationValidated)
+      const locationResponse = await this.repository.create(data)
+      return locationResponse
     } catch (error) {
       throw new AppError('Erro ao cadatrar a locação')
     }

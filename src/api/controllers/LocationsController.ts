@@ -8,30 +8,42 @@ import {
   LocationShowService,
   LocationUpdateService,
 } from '../services/locations'
+import { LocationIsAvailableService } from '../services/locations/LocationIsAvailableService'
 import { AppError } from '../utils/AppError'
 
 export class LocationsController {
-
   async create(request: CustomRequest, response: Response) {
     const { startDate, endDate, totalValue } = request.body
     const { user } = request
     const { apartmentId } = request.params
+    console.log('dentro do controller das locations')
+
     const locationRepository = new LocationRepository()
-    const locationCreateService = new LocationCreateService(
+
+    const locationIsAvailableService = new LocationIsAvailableService(
       locationRepository,
     )
+    const locationExists = await locationIsAvailableService.execute(apartmentId)
+    console.log('locacao já existe= >', locationExists)
+    if (locationExists) {
+      throw new AppError(
+        'Locação indisponivel já existe uma locação vinculada a este apartamento',
+      )
+    }
+    const locationCreateService = new LocationCreateService(locationRepository)
+
     if (!user || typeof user.id !== 'string') {
       throw new AppError('Usuário não encontrado')
     }
-    await locationCreateService.execute({
+    const locationResponse = await locationCreateService.execute({
       startDate,
       endDate,
-      totalValue,
+      totalValue: Number(totalValue),
       userId: user.id,
       apartmentId,
     })
 
-    return response.status(201)
+    return response.status(201).json(locationResponse)
   }
 
   async show(request: Request, response: Response) {
@@ -44,9 +56,7 @@ export class LocationsController {
   async delete(request: Request, response: Response) {
     const { id } = request.params
     const locationRepository = new LocationRepository()
-    const locationDeleteService = new LocationDeleteService(
-      locationRepository
-    )
+    const locationDeleteService = new LocationDeleteService(locationRepository)
     await locationDeleteService.execute(id)
     return response.status(200).json({})
   }
@@ -56,13 +66,11 @@ export class LocationsController {
     const { user } = request
     const { id, apartmentId } = request.params
     const locationRepository = new LocationRepository()
-    const locationUpdateService = new LocationUpdateService(
-      locationRepository,
-    )
+    const locationUpdateService = new LocationUpdateService(locationRepository)
     if (!user || typeof user.id !== 'string') {
       throw new AppError('Usuário não encontrado')
     }
-    
+
     await locationUpdateService.execute({
       id,
       startDate,
@@ -77,16 +85,14 @@ export class LocationsController {
 
   async index(request: CustomRequest, response: Response) {
     const locationRepository = new LocationRepository()
-    const locationIndexService = new LocationIndexService(
-      locationRepository,
-    )
+    const locationIndexService = new LocationIndexService(locationRepository)
     const { user } = request
     if (!user || typeof user.id !== 'string') {
       throw new AppError('usuário não encontrado')
     }
 
-    const locations = locationIndexService.execute(user.id)
-
-    return response.status(200).json({ locations })
+    const locations = await locationIndexService.execute()
+    console.log(locations)
+    return response.status(200).json(locations)
   }
 }

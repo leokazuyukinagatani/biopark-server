@@ -1,18 +1,17 @@
 import { LocationRepository } from '../../repositories/LocationRepository'
 import { AppError } from '../../utils/AppError'
-export class LocationIndexService {
-  repository: LocationRepository
 
+export class LocationIsAvailableService {
+  repository: LocationRepository
   constructor(locationRepository: LocationRepository) {
     this.repository = locationRepository
   }
-
-  async execute() {
+  async execute(id: string) {
     try {
-      const locations = await this.repository.index()
-      return locations
+      const location = await this.repository.showByApartmentId(id)
+      return location
     } catch (error) {
-      throw new AppError('Erro ao buscar as locações')
+      throw new AppError('Erro ao buscar a locação')
     }
   }
 }

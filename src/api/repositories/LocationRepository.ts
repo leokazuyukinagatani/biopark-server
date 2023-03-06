@@ -9,12 +9,29 @@ interface LocationRequest  {
   apartmentId: string;
 }
 
+interface LocationCreateRequest  {
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  totalValue: number;
+  userId: string;
+  apartmentId: string;
+}
+
 
 export class LocationRepository {
-  async create(location: LocationRequest) {
-    await prisma.location.create({
-      data: location
+  async create({startDate,endDate,totalValue,userId,apartmentId}: LocationCreateRequest) {
+    console.log('dentro do repository')
+    console.log('dados ==>', userId, apartmentId)
+    const createResponse =  await prisma.location.create({
+      data: {
+        startDate: undefined,
+        endDate: undefined,
+        totalValue: 2000,
+        userId,
+        apartmentId
+      }
     })
+    return createResponse 
   }
 
   async showById(id: string) {
@@ -25,13 +42,16 @@ export class LocationRepository {
     })
     return locationResult
   }
-
-  async index(userId: string) {
-    const locations = await prisma.location.findMany({
+  async showByApartmentId(apartmentId: string){
+    const locationResult = await prisma.location.findFirst({
       where: {
-        userId
+        apartmentId
       },
-      orderBy: { startDate: 'asc' },
+    })
+    return locationResult
+  }
+  async index() {
+    const locations = await prisma.location.findMany({
       include: {
         user: true,
         apartment: true,
@@ -45,6 +65,7 @@ export class LocationRepository {
     await prisma.apartment.delete({
       where: { id },
     })
+    return 
   }
 
   async update(location : LocationRequest) {
@@ -54,5 +75,6 @@ export class LocationRepository {
       },
       data: location
     })
+    return 
   }
 }
