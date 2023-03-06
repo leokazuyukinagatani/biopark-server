@@ -90,8 +90,8 @@ model Owner {
 
 model Location {
   id         String   @id @default(uuid())
-  startDate  DateTime
-  endDate    DateTime
+  startDate  DateTime @default(now()) 
+  endDate    DateTime @default(now())
   totalValue Int
 
   user   User   @relation(fields: [userId], references: [id])
