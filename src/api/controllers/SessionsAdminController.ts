@@ -7,13 +7,13 @@ import { compare } from "bcryptjs";
 import { UserShowByEmailService } from "../services/users/UserShowByEmailService";
 import { UserRepository } from "../repositories/UserRepository";
 
-export class SessionsController {
+export class SessionsAdminController {
  
   async create(request: Request, response: Response) {
     const { email, password } = request.body;
     const userRepository = new UserRepository()
     const userShowByEmailService = new UserShowByEmailService(userRepository);
-
+    
     const user = await userShowByEmailService.execute(email);
 
     if (!user) {
@@ -25,6 +25,11 @@ export class SessionsController {
     if (!isPassword) {
       throw new AppError("email ou senha incorretos");
     }
+
+    if(user.role !== 'ADMIN'){
+      throw new AppError("autorização invalida");
+    }
+    console.log('passou na validacao')
 
     const { secret, expiresIn } = authConfig.jwt;
 

@@ -11,18 +11,14 @@ import {
 import { AppError } from '../utils/AppError'
 
 export class LocationsController {
-  locationRepository: LocationRepository
-
-  constructor() {
-    this.locationRepository = new LocationRepository()
-  }
 
   async create(request: CustomRequest, response: Response) {
     const { startDate, endDate, totalValue } = request.body
     const { user } = request
     const { apartmentId } = request.params
+    const locationRepository = new LocationRepository()
     const locationCreateService = new LocationCreateService(
-      this.locationRepository,
+      locationRepository,
     )
     if (!user || typeof user.id !== 'string') {
       throw new AppError('Usuário não encontrado')
@@ -40,15 +36,16 @@ export class LocationsController {
 
   async show(request: Request, response: Response) {
     const { id } = request.params
-    const locationShowService = new LocationShowService(this.locationRepository)
+    const locationRepository = new LocationRepository()
+    const locationShowService = new LocationShowService(locationRepository)
     const location = await locationShowService.execute(id)
     return response.status(200).json({ location })
   }
   async delete(request: Request, response: Response) {
     const { id } = request.params
-
+    const locationRepository = new LocationRepository()
     const locationDeleteService = new LocationDeleteService(
-      this.locationRepository,
+      locationRepository
     )
     await locationDeleteService.execute(id)
     return response.status(200).json({})
@@ -58,8 +55,9 @@ export class LocationsController {
     const { startDate, endDate, totalValue } = request.body
     const { user } = request
     const { id, apartmentId } = request.params
+    const locationRepository = new LocationRepository()
     const locationUpdateService = new LocationUpdateService(
-      this.locationRepository,
+      locationRepository,
     )
     if (!user || typeof user.id !== 'string') {
       throw new AppError('Usuário não encontrado')
@@ -78,8 +76,9 @@ export class LocationsController {
   }
 
   async index(request: CustomRequest, response: Response) {
+    const locationRepository = new LocationRepository()
     const locationIndexService = new LocationIndexService(
-      this.locationRepository,
+      locationRepository,
     )
     const { user } = request
     if (!user || typeof user.id !== 'string') {
