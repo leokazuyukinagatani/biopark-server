@@ -46,7 +46,9 @@ export class BuildingRepository {
       },
 
       include: {
-        image: true
+        image: true,
+        apartment: true
+
       }
     })
     return buildingResult
