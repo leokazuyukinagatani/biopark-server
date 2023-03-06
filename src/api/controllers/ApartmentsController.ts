@@ -63,7 +63,7 @@ export class ApartmentsController {
     )
     const apartment = await apartmentShowService.execute(id)
 
-    return response.status(200).json({ apartment })
+    return response.status(200).json( apartment )
   }
 
   async delete(request: CustomRequest, response: Response) {
@@ -140,14 +140,14 @@ export class ApartmentsController {
   }
 
   async index(request: Request, response: Response) {
-    const { id } = request.params
+    const { buildingId } = request.params
     const apartmentRepository = new ApartmentRepository()
     const apartmentIndexService = new ApartmentIndexService(
-      apartmentRepository,
+      apartmentRepository
     )
 
-    const apartments = apartmentIndexService.execute(id)
+    const apartments = await apartmentIndexService.execute(buildingId)
 
-    return response.status(200).json({ apartments })
+    return response.status(200).json( apartments )
   }
 }

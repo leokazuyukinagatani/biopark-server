@@ -42,7 +42,7 @@ export class ApartmentRepository {
 
       imageId,
     )
-    const ownerId  = 'b310a547-2fce-4394-9b24-26172d8f8f4b' //id do owner biopark
+    const ownerId  = '0a72b075-7d0e-492f-94d2-9c476bec2f83' //id do owner biopark
     const apartmentResponse = await prisma.apartment.create({
       data: {
         apartmentNumber,
@@ -75,6 +75,10 @@ export class ApartmentRepository {
       where: {
         id,
       },
+      include: {
+        image: true,
+        location: true
+      }
     })
     return apartmentResult
   }
@@ -86,6 +90,7 @@ export class ApartmentRepository {
       },
       orderBy: { id: 'asc' },
       include: {
+        image: true,
         building: true,
         location: true,
         Owner: true,
