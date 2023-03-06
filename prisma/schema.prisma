@@ -45,52 +45,72 @@ model Building {
   description String?
   floors      Int
   amenities   String[]
-  image       String?
   apartment   Apartment[]
   address     Address?
+
+  image   Image?  @relation(fields: [imageId], references: [id])
+  imageId String? @unique
 
   @@map("buildings")
 }
 
 model Apartment {
-  id              String   @id @default(uuid())
-  apartmentNumber Int
-  bedrooms        Int
-  bathrooms       Int
-  parkingSpaces   Int
-  furnished       Boolean
-  petsAllowed     Boolean
-  size            Int
-  rentValue       Int
+  id              String  @id @default(uuid())
+  apartmentNumber Int?
+  bedrooms        Int?
+  bathrooms       Int?
+  parkingSpaces   Int?
+  furnished       Boolean?
+  petsAllowed     Boolean?
+  size            Int?
+  rentValue       Int?
 
-  building        Building @relation(fields: [buildingId], references: [id])
-  buildingId      String
+  building   Building @relation(fields: [buildingId], references: [id])
+  buildingId String
 
-  Owner    Owner?     @relation(fields: [ownerId], references: [id])
+  Owner    Owner?    @relation(fields: [ownerId], references: [id])
   ownerId  String?
-  
-  Location Location[]
+  image    Image?    @relation(fields: [imageId], references: [id])
+  imageId  String?   @unique
+  location Location?
+
+  @@map("apartments")
 }
 
 model Owner {
   id String @id @default(uuid())
 
-  user        User        @relation(fields: [userId], references: [id])
-  userId      String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
   apartments Apartment[]
+
+  @@map("owners")
 }
 
 model Location {
-  id          String    @id @default(uuid())
-  startDate   DateTime
-  endDate     DateTime
-  totalValue  Int
-  
-  user        User      @relation(fields: [userId], references: [id])
-  userId      String
-  apartment  Apartment @relation(fields: [apartmentId], references: [id])
-  apartmentId String
+  id         String   @id @default(uuid())
+  startDate  DateTime
+  endDate    DateTime
+  totalValue Int
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  apartment   Apartment @relation(fields: [apartmentId], references: [id])
+  apartmentId String    @unique
+
+  @@map("locations")
+}
+
+model Image {
+  id        String     @id @default(uuid())
+  filename  String     @unique
+  url       String
+  building  Building?
+  apartment Apartment?
+
+  @@map("images")
 }
 
 enum Role {
