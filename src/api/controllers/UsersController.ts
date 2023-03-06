@@ -3,30 +3,30 @@ import { UserRepository } from "../repositories/UserRepository";
 import { UserCreateService, UserShowByEmailService } from "../services/users";
 
 export class UsersController {
-  userRepository: UserRepository
-
-  constructor() {
-    this.userRepository = new UserRepository()
-  }
-  
+ 
   async create(request: Request, response: Response) {
+    const userRepository = new UserRepository()
+
     const { name, email, password } = request.body;
 
-    const userCreateService = new UserCreateService(this.userRepository);
+    
+    const userCreateService = new UserCreateService(userRepository);
 
-    await userCreateService.execute({
+    const userId = await userCreateService.execute({
       name,
       email,
       password
     });
 
-    return response.status(201);
+    return response.status(201).json({
+      userId
+    });
   }
 
   async show(request: Request, response: Response) {
     const { email } = request.body;
-
-    const userShowByEmailService = new UserShowByEmailService(this.userRepository);
+    const userRepository = new UserRepository()
+    const userShowByEmailService = new UserShowByEmailService(userRepository);
 
     const user = await userShowByEmailService.execute(email);
 

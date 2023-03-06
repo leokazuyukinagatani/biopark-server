@@ -9,13 +9,14 @@ interface UserRequest {
 
 export class UserRepository {
   async create({ name, email, password }: UserRequest) {
-    await prisma.user.create({
+    const response  = await prisma.user.create({
       data: {
         email,
         name,
         password,
       },
     })
+    return response
   }
 
   async update({ id, name, email, password }: UserRequest) {
@@ -32,11 +33,13 @@ export class UserRepository {
   }
 
   async showByEmail(email: string) {
+
     const userResult = await prisma.user.findFirst({
       where: {
         email,
       },
     })
+    
     return userResult
   }
 }
