@@ -54,4 +54,35 @@ export class PropositionController {
     const propositionResponse = await propositionDeleteService.execute(id)
     return response.json(propositionResponse)
   }
+  async index(request: CustomRequest, response: Response) {
+    const { user } = request
+    if(!user) {
+      return response.json('usuário não encontrado')
+    }
+    const userId = user.id
+    const propositionRepository = new PropositionRepository()
+    const propositionIndexService = new PropositionIndexService(
+      propositionRepository,
+    )
+
+    const propositionResponse = await propositionIndexService.execute(userId as string)
+    return response.json(propositionResponse)
+  }
+
+  async update(request: CustomRequest, response: Response) {
+    const {rentalValue, status } = request.body
+    const {id} = request.params
+    const propositionRepository = new PropositionRepository()
+    const propositionUpdateService = new PropositionUpdateService(
+      propositionRepository,
+    )
+    const propositionResponse = await propositionUpdateService.execute({
+      id,
+      rentalValue,
+      status
+    })
+
+    return response.json(propositionResponse)
+
+  }
 }
