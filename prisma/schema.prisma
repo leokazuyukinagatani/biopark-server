@@ -13,16 +13,17 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
-  password  String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  imageId   String?    @unique
-  role      Role       @default(USER)
-  owners    Owner[]
-  locations Location[]
+  id          String        @id @default(uuid())
+  name        String
+  email       String        @unique
+  password    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  imageId     String?       @unique
+  role        Role          @default(USER)
+  owners      Owner[]
+  locations   Location[]
+  Proposition Proposition[]
 
   @@map("users")
 }
@@ -55,7 +56,7 @@ model Building {
 }
 
 model Apartment {
-  id              String  @id @default(uuid())
+  id              String   @id @default(uuid())
   apartmentNumber Int?
   bedrooms        Int?
   bathrooms       Int?
@@ -68,11 +69,12 @@ model Apartment {
   building   Building @relation(fields: [buildingId], references: [id])
   buildingId String
 
-  Owner    Owner?    @relation(fields: [ownerId], references: [id])
-  ownerId  String?
-  image    Image?    @relation(fields: [imageId], references: [id])
-  imageId  String?   @unique
-  location Location?
+  Owner       Owner?       @relation(fields: [ownerId], references: [id])
+  ownerId     String?
+  image       Image?       @relation(fields: [imageId], references: [id])
+  imageId     String?      @unique
+  location    Location?
+  Proposition Proposition[]
 
   @@map("apartments")
 }
@@ -90,7 +92,7 @@ model Owner {
 
 model Location {
   id         String   @id @default(uuid())
-  startDate  DateTime @default(now()) 
+  startDate  DateTime @default(now())
   endDate    DateTime @default(now())
   totalValue Int
 
@@ -111,6 +113,22 @@ model Image {
   apartment Apartment?
 
   @@map("images")
+}
+
+model Proposition {
+  id          String           @id @default(uuid())
+  user        User             @relation(fields: [userId], references: [id])
+  userId      String
+  apartment   Apartment        @relation(fields: [apartmentId], references: [id])
+  apartmentId String           @unique
+  rentalValue Int
+  status      StatusProposition  @default(PENDING)
+}
+
+enum StatusProposition {
+  PENDING
+  ACCEPTED
+  REJECTED
 }
 
 enum Role {
