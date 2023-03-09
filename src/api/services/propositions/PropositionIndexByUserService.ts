@@ -1,15 +1,16 @@
 import { PropositionRepository } from '../../repositories/PropositionRepository'
 
 import { AppError } from '../../utils/AppError'
-class PropositionIndexService {
+class PropositionIndexByUserService {
   repository: PropositionRepository
 
   constructor(propositionRepository: PropositionRepository) {
     this.repository = propositionRepository
   }
-  async execute() {
+  async execute(userId: string) {
     try {
-      const propositionsResponse = await this.repository.index()
+      console.log('dentro do service com filtro')
+      const propositionsResponse = await this.repository.indexByUser(userId)
       return propositionsResponse
     } catch (error) {
       if (error instanceof Error) {
@@ -20,4 +21,4 @@ class PropositionIndexService {
     }
   }
 }
-export { PropositionIndexService }
+export { PropositionIndexByUserService }

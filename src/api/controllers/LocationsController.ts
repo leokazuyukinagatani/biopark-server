@@ -42,6 +42,7 @@ export class LocationsController {
       userId: user.id,
       apartmentId,
     })
+    console.log('fez a criação da locacao')
 
     return response.status(201).json(locationResponse)
   }
@@ -51,7 +52,7 @@ export class LocationsController {
     const locationRepository = new LocationRepository()
     const locationShowService = new LocationShowService(locationRepository)
     const location = await locationShowService.execute(id)
-    return response.status(200).json({ location })
+    return response.status(200).json(location)
   }
   async delete(request: Request, response: Response) {
     const { id } = request.params

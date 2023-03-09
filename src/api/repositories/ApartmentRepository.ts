@@ -77,7 +77,8 @@ export class ApartmentRepository {
       },
       include: {
         image: true,
-        location: true
+        location: true,
+        Proposition: true
       }
     })
     return apartmentResult

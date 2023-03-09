@@ -26,7 +26,7 @@ export class LocationRepository {
       data: {
         startDate: undefined,
         endDate: undefined,
-        totalValue: 2000,
+        totalValue,
         userId,
         apartmentId
       }
@@ -39,6 +39,10 @@ export class LocationRepository {
       where: {
         id,
       },
+      include: {
+        apartment: true,
+        user:true,
+      }
     })
     return locationResult
   }

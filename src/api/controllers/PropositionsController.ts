@@ -8,13 +8,17 @@ import {
   PropositionShowService,
   PropositionUpdateService,
 } from '../services/propositions'
+import { PropositionIndexByUserService } from '../services/propositions/PropositionIndexByUserService'
 
+import { PropositionPatchService } from '../services/propositions/PropositionPatchService'
 
-export class PropositionController {
+export class PropositionsController {
   async create(request: CustomRequest, response: Response) {
     const { user } = request
     const { apartmentId } = request.params
     const { rentalValue } = request.body
+
+    console.log('dentro do controller ', user, apartmentId, rentalValue)
 
     const propositionRepository = new PropositionRepository()
     const propositionCreateService = new PropositionCreateService(
@@ -55,23 +59,31 @@ export class PropositionController {
     return response.json(propositionResponse)
   }
   async index(request: CustomRequest, response: Response) {
-    const { user } = request
-    if(!user) {
-      return response.json('usuário não encontrado')
-    }
-    const userId = user.id
     const propositionRepository = new PropositionRepository()
-    const propositionIndexService = new PropositionIndexService(
-      propositionRepository,
-    )
+    const { user } = request
+    const { byUser }= request.query
 
-    const propositionResponse = await propositionIndexService.execute(userId as string)
-    return response.json(propositionResponse)
+    if(byUser && user) {
+      const propositionIndexByUserService = new PropositionIndexByUserService(
+        propositionRepository,
+      )
+      const propositionResponse = await propositionIndexByUserService.execute(user.id as string)
+      return response.json(propositionResponse)
+    }else {
+      const propositionIndexService = new PropositionIndexService(
+        propositionRepository,
+      )
+      const propositionResponse = await propositionIndexService.execute()
+      return response.json(propositionResponse)
+    }
+   
   }
 
+  
+
   async update(request: CustomRequest, response: Response) {
-    const {rentalValue, status } = request.body
-    const {id} = request.params
+    const { rentalValue, status } = request.body
+    const { id } = request.params
     const propositionRepository = new PropositionRepository()
     const propositionUpdateService = new PropositionUpdateService(
       propositionRepository,
@@ -79,10 +91,26 @@ export class PropositionController {
     const propositionResponse = await propositionUpdateService.execute({
       id,
       rentalValue,
-      status
+      status,
     })
 
     return response.json(propositionResponse)
+  }
 
+  async patch(request: CustomRequest, response: Response) {
+    const { status } = request.body
+    const { id } = request.params
+
+    console.log('dentro do proposition Controller')
+    const propositionRepository = new PropositionRepository()
+    const propositionPatchService = new PropositionPatchService(
+      propositionRepository
+    )
+    const propositionResponse = await propositionPatchService.execute({
+      id,
+      status,
+    })
+    console.log('proposition reponse =:>>>>',propositionResponse)
+    return  response.json(propositionResponse)
   }
 }

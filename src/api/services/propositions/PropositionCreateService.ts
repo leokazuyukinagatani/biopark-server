@@ -17,11 +17,12 @@ class PropositionCreateService {
   }
 
   async execute({ userId, apartmentId, rentalValue }) {
+    console.log('dentr do service', userId, apartmentId, rentalValue)
     try {
       const propositionResponse = await this.repository.create({
         userId,
         apartmentId,
-        rentalValue,
+        rentalValue: Number(rentalValue),
       })
 
       return propositionResponse
